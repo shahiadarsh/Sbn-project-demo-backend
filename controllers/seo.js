@@ -5,8 +5,24 @@ const Seo = require('../models/Seo');
 // @access  Public
 exports.getSeo = async (req, res) => {
     try {
-        const seo = await Seo.findOne({ page: req.params.page });
-        if (!seo) return res.status(404).json({ success: false, message: 'SEO not found' });
+        const page = req.params.page;
+        let seo = await Seo.findOne({ page });
+        
+        // Self-healing: if no SEO data exists, return high-octane RCM defaults instead of a 404
+        if (!seo) {
+            console.log(`SEO missing for page: ${page}. Returning enterprise defaults.`);
+            return res.status(200).json({ 
+                success: true, 
+                data: {
+                    page,
+                    title: `SBN Healthcare Solution | ${page.charAt(0).toUpperCase() + page.slice(1)}`,
+                    description: 'Explore SBN Healthcare Solution - Your elite partner in Revenue Cycle Management (RCM) and financial healthcare optimization.',
+                    keywords: 'medical billing, medical coding, RCM, healthcare finance',
+                    isDefault: true
+                } 
+            });
+        }
+        
         res.status(200).json({ success: true, data: seo });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });

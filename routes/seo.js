@@ -4,7 +4,7 @@ const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.get('/', protect, getAllSeo);
+router.get('/', getAllSeo);
 router.post('/', protect, upsertSeo);
 router.get('/tools/sitemap', protect, getSitemapData);
 router.get('/:page', getSeo);
