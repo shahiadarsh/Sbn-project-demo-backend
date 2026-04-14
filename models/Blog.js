@@ -26,22 +26,94 @@ const BlogSchema = new mongoose.Schema({
         type: String,
         default: 'default-blog.jpg'
     },
+    imageAlt: {
+        type: String,
+        default: ''
+    },
     date: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
         type: Date,
         default: Date.now
     },
     readTime: {
         type: String,
         default: '5 Min Read'
+    },
+    // Advanced SEO Fields
+    metaTitle: {
+        type: String,
+        trim: true
+    },
+    metaDescription: {
+        type: String,
+        trim: true
+    },
+    focusKeywords: {
+        type: [String],
+        default: []
+    },
+    canonicalUrl: {
+        type: String,
+        trim: true
+    },
+    robotsIndex: {
+        type: Boolean,
+        default: true
+    },
+    robotsFollow: {
+        type: Boolean,
+        default: true
+    },
+    // Open Graph
+    ogTitle: String,
+    ogDescription: String,
+    ogImage: String,
+    // Twitter
+    twitterTitle: String,
+    twitterDescription: String,
+    twitterImage: String,
+    twitterCard: {
+        type: String,
+        default: 'summary_large_image'
+    },
+    // Schema
+    schemaType: {
+        type: String,
+        enum: ['Article', 'BlogPosting', 'FAQ', 'HowTo', 'None'],
+        default: 'BlogPosting'
+    },
+    // Author
+    author: {
+        name: {
+            type: String,
+            default: 'SBN Healthcare Team'
+        },
+        bio: String,
+        image: String
+    },
+    // Metrics & Quality
+    seoScore: {
+        type: Number,
+        default: 0
+    },
+    isPublished: {
+        type: Boolean,
+        default: false
     }
 });
 
-// Create slug from title before saving
+// Create slug from title before saving if missing
 BlogSchema.pre('save', function (next) {
-    this.slug = this.title
-        .toLowerCase()
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-');
+    if (!this.slug) {
+        this.slug = this.title
+            .toLowerCase()
+            .replace(/[^\w ]+/g, '')
+            .replace(/ +/g, '-');
+    }
+    this.updatedAt = Date.now();
     next();
 });
 

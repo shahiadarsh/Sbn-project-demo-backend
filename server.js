@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
+const { handleRedirects, notFoundLogger } = require('./middleware/errorMonitor');
 
 // Load env variables
 dotenv.config();
@@ -15,6 +16,9 @@ const app = express();
 
 // Body parser
 app.use(express.json());
+
+// Redirection Manager
+app.use(handleRedirects);
 
 // Enable CORS
 app.use(cors());
@@ -35,6 +39,10 @@ app.use('/api/seo', require('./routes/seo'));
 app.use('/api/redirects', require('./routes/redirects'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/ai', require('./routes/ai'));
+app.use('/api/error-logs', require('./routes/errorLogs'));
+
+// Catch-all 404
+app.use(notFoundLogger);
 
 const PORT = process.env.PORT || 5000;
 

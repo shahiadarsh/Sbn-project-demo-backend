@@ -68,3 +68,34 @@ exports.chat = async (req, res) => {
         });
     }
 };
+
+exports.generateSeoSuggestions = async (req, res) => {
+    try {
+        const { title, content } = req.body;
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const prompt = `Act as an SEO expert. Analyze this blog post and provide:
+        1. An optimized Meta Title (max 60 chars)
+        2. A compelling Meta Description (max 160 chars)
+        3. 5 relevant Focus Keywords
+        4. A suggested URL slug.
+        
+        Title: ${title}
+        Content: ${content.substring(0, 2000)}
+        
+        Return ONLY a JSON object with fields: metaTitle, metaDescription, keywords (array), slug.`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        // Clean markdown if AI returns it
+        const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const suggestions = JSON.parse(cleanJson);
+
+        res.status(200).json({ success: true, data: suggestions });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'AI failed to generate suggestions' });
+    }
+};
