@@ -82,7 +82,7 @@ const BlogSchema = new mongoose.Schema({
     // Schema
     schemaType: {
         type: String,
-        enum: ['Article', 'BlogPosting', 'FAQ', 'HowTo', 'None'],
+        enum: ['Article', 'BlogPosting', 'FAQ', 'HowTo', 'JobPosting', 'LocalBusiness', 'Organization', 'None'],
         default: 'BlogPosting'
     },
     // Author

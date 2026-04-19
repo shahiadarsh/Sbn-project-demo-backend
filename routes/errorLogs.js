@@ -14,11 +14,20 @@ router.get('/', async (req, res) => {
     }
 });
 
-// @desc    Clear logs
-router.delete('/', async (req, res) => {
+// @desc    Report an error (Public)
+// @route   POST /api/error-logs/report
+router.post('/report', async (req, res) => {
     try {
-        await ErrorLog.deleteMany();
-        res.status(200).json({ success: true, data: {} });
+        const { url, referer, userAgent, statusCode } = req.body;
+        const log = await ErrorLog.create({
+            url,
+            referer,
+            userAgent,
+            statusCode: statusCode || 404,
+            timestamp: Date.now(),
+            ip: req.ip
+        });
+        res.status(201).json({ success: true, data: log });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });
     }

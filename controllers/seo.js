@@ -8,19 +8,8 @@ exports.getSeo = async (req, res) => {
         const page = req.params.page;
         let seo = await Seo.findOne({ page });
         
-        // Self-healing: if no SEO data exists, return high-octane RCM defaults instead of a 404
         if (!seo) {
-            console.log(`SEO missing for page: ${page}. Returning enterprise defaults.`);
-            return res.status(200).json({ 
-                success: true, 
-                data: {
-                    page,
-                    title: `SBN Healthcare Solution | ${page.charAt(0).toUpperCase() + page.slice(1)}`,
-                    description: 'Explore SBN Healthcare Solution - Your elite partner in Revenue Cycle Management (RCM) and financial healthcare optimization.',
-                    keywords: 'medical billing, medical coding, RCM, healthcare finance',
-                    isDefault: true
-                } 
-            });
+            return res.status(200).json({ success: true, data: null });
         }
         
         res.status(200).json({ success: true, data: seo });
