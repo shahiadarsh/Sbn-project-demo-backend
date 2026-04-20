@@ -33,4 +33,16 @@ router.post('/report', async (req, res) => {
     }
 });
 
+// @desc    Clear all logs
+// @route   DELETE /api/error-logs
+// @access  Private
+router.delete('/', async (req, res) => {
+    try {
+        await ErrorLog.deleteMany({});
+        res.status(200).json({ success: true, message: 'All logs cleared' });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
 module.exports = router;
