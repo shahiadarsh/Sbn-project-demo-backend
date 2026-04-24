@@ -30,7 +30,7 @@ const seedData = async () => {
             excerpt: 'Discover the key strategies to streamline your clinical integrity and maximize revenue.',
             content: 'Full content goes here...',
             category: 'RCM Strategy',
-            image: '/img/bg1.jpg'
+            image: '/img/bg1.webp'
         });
         await blog.save();
         console.log('Sample blog created');

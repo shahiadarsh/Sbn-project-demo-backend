@@ -24,7 +24,7 @@ const BlogSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: 'default-blog.jpg'
+        default: 'default-blog.webp'
     },
     imageAlt: {
         type: String,
