@@ -40,6 +40,7 @@ app.use('/api/redirects', require('./routes/redirects'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/ai', require('./routes/ai'));
 app.use('/api/error-logs', require('./routes/errorLogs'));
+app.use('/api/upload', require('./routes/upload'));
 
 // Catch-all 404
 app.use(notFoundLogger);
