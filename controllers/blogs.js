@@ -33,6 +33,7 @@ exports.createBlog = async (req, res) => {
         const blog = await Blog.create(req.body);
         res.status(201).json({ success: true, data: blog });
     } catch (err) {
+        console.error('CRITICAL BACKEND ERROR:', err);
         res.status(400).json({ success: false, error: err.message });
     }
 };

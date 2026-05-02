@@ -106,15 +106,14 @@ const BlogSchema = new mongoose.Schema({
 });
 
 // Create slug from title before saving if missing
-BlogSchema.pre('save', function (next) {
-    if (!this.slug) {
+BlogSchema.pre('save', async function () {
+    if (!this.slug && this.title) {
         this.slug = this.title
             .toLowerCase()
             .replace(/[^\w ]+/g, '')
             .replace(/ +/g, '-');
     }
     this.updatedAt = Date.now();
-    next();
 });
 
 module.exports = mongoose.model('Blog', BlogSchema);
