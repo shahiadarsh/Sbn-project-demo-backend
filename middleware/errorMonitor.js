@@ -4,10 +4,20 @@ const ErrorLog = require('../models/ErrorLog');
 // Middleware to handle 301 redirects from database
 exports.handleRedirects = async (req, res, next) => {
     try {
-        const redirect = await Redirect.findOne({ fromPath: req.originalUrl });
+        const path = req.originalUrl.split('?')[0];
+        
+        // Check database first
+        const redirect = await Redirect.findOne({ fromPath: path });
         if (redirect) {
             return res.redirect(redirect.code || 301, redirect.toPath);
         }
+
+        // Auto-strip .html for legacy URLs
+        if (path.endsWith('.html')) {
+            const cleanPath = path.replace(/\.html$/, '');
+            return res.redirect(301, cleanPath + (req.originalUrl.includes('?') ? '?' + req.originalUrl.split('?')[1] : ''));
+        }
+        
         next();
     } catch (err) {
         next();

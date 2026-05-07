@@ -8,7 +8,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'sbn-blogs',
-        allowed_formats: ['webp', 'webp', 'jpeg', 'webp']
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
     },
 });
 
