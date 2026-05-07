@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', getAllSeo);
 router.post('/', protect, upsertSeo);
 router.get('/tools/sitemap', protect, getSitemapData);
-router.get(/.*/, getSeo);
+router.get(/\/(.*)/, getSeo);
 router.delete('/:id', protect, deleteSeo);
 
 module.exports = router;
