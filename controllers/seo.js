@@ -5,7 +5,9 @@ const Seo = require('../models/Seo');
 // @access  Public
 exports.getSeo = async (req, res) => {
     try {
-        const page = req.params.page;
+        let page = req.params[0] || req.params['0'];
+        if (page && page.startsWith('/')) page = page.substring(1);
+        
         let seo = await Seo.findOne({ page });
         
         if (!seo) {
