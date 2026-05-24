@@ -26,9 +26,13 @@ exports.getSeo = async (req, res) => {
 exports.upsertSeo = async (req, res) => {
     try {
         const { page } = req.body;
+        const updateData = { ...req.body, updatedAt: Date.now() };
+        if (!updateData._id) {
+            delete updateData._id;
+        }
         const seo = await Seo.findOneAndUpdate(
             { page },
-            { ...req.body, updatedAt: Date.now() },
+            updateData,
             { new: true, upsert: true, runValidators: true }
         );
         res.status(200).json({ success: true, data: seo });
