@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const ErrorLog = require('../models/ErrorLog');
+const { protect, authorize } = require('../middleware/auth');
 
 // @desc    Get all error logs
 // @route   GET /api/error-logs
-// @access  Private
-router.get('/', async (req, res) => {
+// @access  Private (Admin only)
+router.get('/', protect, authorize('admin'), async (req, res) => {
     try {
         const logs = await ErrorLog.find().sort({ timestamp: -1 }).limit(100);
         res.status(200).json({ success: true, count: logs.length, data: logs });
@@ -35,8 +36,8 @@ router.post('/report', async (req, res) => {
 
 // @desc    Clear all logs
 // @route   DELETE /api/error-logs
-// @access  Private
-router.delete('/', async (req, res) => {
+// @access  Private (Admin only)
+router.delete('/', protect, authorize('admin'), async (req, res) => {
     try {
         await ErrorLog.deleteMany({});
         res.status(200).json({ success: true, message: 'All logs cleared' });
