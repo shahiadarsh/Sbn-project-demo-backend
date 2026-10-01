@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 const { handleRedirects, notFoundLogger } = require('./middleware/errorMonitor');
 
@@ -20,11 +21,22 @@ app.use(express.json());
 // Redirection Manager
 app.use(handleRedirects);
 
-// Enable CORS
-app.use(cors());
+// Enable CORS with restricted origin
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+}));
 
 // Set security headers
 app.use(helmet());
+
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.'
+});
+app.use(limiter);
 
 // Logging
 if (process.env.NODE_ENV === 'development') {
