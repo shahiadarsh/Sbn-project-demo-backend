@@ -21,10 +21,33 @@ app.use(express.json());
 // Redirection Manager
 app.use(handleRedirects);
 
-// Enable CORS with restricted origin
+// Enable CORS
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://sbnhealthcaresolution.com',
+    'https://www.sbnhealthcaresolution.com',
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+        if (
+            allowedOrigins.includes(origin) ||
+            origin.endsWith('.vercel.app') ||
+            origin.includes('sbnhealthcaresolution') ||
+            origin.includes('sbnhealthcare') ||
+            origin.includes('localhost')
+        ) {
+            return callback(null, origin);
+        }
+        return callback(null, origin);
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
 
 // Set security headers
